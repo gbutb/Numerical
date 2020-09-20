@@ -94,6 +94,4 @@ void Heat::singleStep(cv::Mat& input, cv::Mat& output, cl_command_queue queue) {
         0, NULL, NULL);
     if (err < 0)
         throw std::runtime_error("Unable to read output");
-
-    printf("Res: %f and %f\n", *((float*)output.data + 5), ratio);
 }
