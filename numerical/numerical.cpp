@@ -7,6 +7,8 @@
 
 #include <stdexcept>
 #include "numerical.hpp"
+#include "program/heat/heat.hpp"
+
 
 Numerical::Numerical() {
     int err;
