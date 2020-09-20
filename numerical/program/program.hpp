@@ -15,6 +15,9 @@ class Program {
     cl_context _context;
     cl_device_id _device;
 
+ protected:
+    cl_program _program;
+
     /**
      * Builds an OpenCL program given its source.
      * @param source Source of the OpenCL program.
@@ -23,6 +26,7 @@ class Program {
 
  public:
     Program(cl_context context, cl_device_id device) : _context(context), _device(device) {}
+    ~Program();
 };
 
 #endif  // NUMERICAL_PROGRAM_PROGRAM_HPP_

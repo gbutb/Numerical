@@ -32,3 +32,7 @@ cl_program Program::build_program(const char* source) const {
 
     return program;
 }
+
+Program::~Program() {
+    clReleaseProgram(_program);
+}

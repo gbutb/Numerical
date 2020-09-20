@@ -13,12 +13,24 @@
 #include <opencv2/opencv.hpp>
 #include "numerical/program/program.hpp"
 
+
+struct SolverOptions {
+   double _time_step;
+   double _space_step;
+
+   unsigned int dimension;
+};
+
 class Heat : public Program {
  private:
-    double _time_step = -1;
-    double _space_step = -1;
+    cl_kernel _heat_kernel;
+    cl_mem _input_heat_matrix;
+    cl_mem _output_heat_matrix;
+    cl_mem _r_coefficient;
+
  public:
-    Heat(cl_context context, cl_device_id device) : Program::Program(context, device) {}
+    Heat(cl_context context, cl_device_id device, SolverOptions options); 
+    ~Heat();
 
     /**
      * Takes input matrix and passes it through kernel.
