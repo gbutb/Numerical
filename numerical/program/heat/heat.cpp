@@ -15,6 +15,9 @@ Heat::Heat(cl_context context, cl_device_id device, SolverOptions options) : Pro
     height = options.height;
     ratio = (float)options._time_step/pow(options._space_step, 2);
 
+    if (ratio > 1/4.0)
+        printf("Ratio is %f > 1/4.0. The solution might not converge!\n", ratio);
+
     // Initialize program
     _program = build_program(
         #include "heat.cl"

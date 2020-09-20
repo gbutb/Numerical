@@ -1,15 +1,15 @@
 R""(
 
 int get_x(int tid, int width, int height) {
-    return tid % height;
+    return (tid - tid % width) / width;
 }
 
 int get_y(int tid, int width, int height) {
-    return (tid - tid % height) / height;
+    return tid % width;
 }
 
 int get_tid(int x, int y, int width, int height) {
-    return y + x * height;
+    return y + x * width;
 }
 
 int get_value_at(int x, int y, int width, int height, __global float* matrix) {

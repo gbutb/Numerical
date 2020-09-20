@@ -19,15 +19,15 @@ int main(void) {
 
     SolverOptions options;
     options.width = 256;
-    options.height = 256;
+    options.height = 300;
     options._space_step = 1.0;
-    options._time_step = 1/5.0;
+    options._time_step = 1/10.0;
     Heat heat(numerical._context, numerical._device, options);
 
     cv::Mat input = cv::Mat::zeros(options.height, options.width, CV_32FC1);
-    for (int i = -10; i < 10; ++i)
-        for (int j = -10; j < 10; ++j)
-            input.at<float>(128 + i, 128 + j) = 100.0;
+    for (int y = -10; y < 10; ++y)
+        for (int x = -10; x < 10; ++x)
+            input.at<float>(128 + 2*y, 128 + x) = 100.0;
     cv::Mat output = cv::Mat::zeros(options.height, options.width, CV_32FC1);
     for (int i = 0;; ++i) {
         heat.singleStep(input, output, numerical._queue);
