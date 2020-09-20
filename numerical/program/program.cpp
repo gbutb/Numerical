@@ -26,6 +26,7 @@ cl_program Program::build_program(const char* source) const {
         char* log = (char*)malloc(log_size + 1);
         log[log_size] = '\0';
         clGetProgramBuildInfo(program, _device, CL_PROGRAM_BUILD_LOG, log_size + 1, log, NULL);
+        printf("%s\n", log);
         free(log);
         throw std::runtime_error("Unable compile program");
     }

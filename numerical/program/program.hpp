@@ -11,11 +11,10 @@
 #include <OpenCL/opencl.h>
 
 class Program {
- private:
+ protected:
     cl_context _context;
     cl_device_id _device;
 
- protected:
     cl_program _program;
 
     /**

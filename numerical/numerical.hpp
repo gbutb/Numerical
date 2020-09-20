@@ -12,7 +12,7 @@
 #include <OpenCL/opencl.h>
 
 class Numerical {
- private:
+ public:
     cl_device_id _device;
     cl_context _context;
     cl_command_queue _queue;
