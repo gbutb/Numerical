@@ -25,31 +25,23 @@ Heat::Heat(cl_context context, cl_device_id device, SolverOptions options) : Pro
     if (err < 0)
         throw std::runtime_error("Unable to create kernel");
 
-    // Allocate buffers
-    _r_coeff_buffer = clCreateBuffer(
-        _context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-        sizeof(float), &ratio, &err);
+    // Allocate I/O buffers
+    _input_heat_matrix = clCreateBuffer(
+        _context, CL_MEM_READ_ONLY,
+        width * height * sizeof(float), NULL, &err);
     if (err < 0)
-        throw std::runtime_error("Unable to allocate r coefficient buffer");
-    _width_buffer = clCreateBuffer(
-        _context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-        sizeof(int), &width, &err);
+        throw std::runtime_error("Unable to transfer input matrix");
+
+    _output_heat_matrix = clCreateBuffer(
+        _context, CL_MEM_READ_WRITE,
+        width * height * sizeof(float), NULL, &err);
     if (err < 0)
-        throw std::runtime_error("Unable to allocate width buffer");
-    _height_buffer = clCreateBuffer(
-        _context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-        sizeof(int), &height, &err);
-    if (err < 0)
-        throw std::runtime_error("Unable to allocate height buffer");
-    
+        throw std::runtime_error("Unable to initialize output buffer");
 }
 
 Heat::~Heat() {
     clReleaseMemObject(_input_heat_matrix);
     clReleaseMemObject(_output_heat_matrix);
-    clReleaseMemObject(_width_buffer);
-    clReleaseMemObject(_height_buffer);
-    clReleaseMemObject(_r_coeff_buffer);
     clReleaseKernel(_heat_kernel);
 }
 
@@ -59,24 +51,19 @@ void Heat::singleStep(cv::Mat& input, cv::Mat& output, cl_command_queue queue) {
     CV_Assert(output.type() == CV_32FC1);
 
     // Allocate memories
-    _input_heat_matrix = clCreateBuffer(
-        _context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-        width * height * sizeof(float), input.data, &err);
+    err = clEnqueueWriteBuffer(
+        queue, _input_heat_matrix,
+        CL_TRUE, 0, width * height * sizeof(float),
+        input.data, 0, NULL, NULL);
     if (err < 0)
-        throw std::runtime_error("Unable to transfer input matrix");
-
-    _output_heat_matrix = clCreateBuffer(
-        _context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
-        width * height * sizeof(float), output.data, &err);
-    if (err < 0)
-        throw std::runtime_error("Unable to initialize output buffer");
+        throw std::runtime_error("Unable to enqueue copy operation");
 
     // Initialize arguments
     err = clSetKernelArg(_heat_kernel, 0, sizeof(cl_mem), &_input_heat_matrix);
     err |= clSetKernelArg(_heat_kernel, 1, sizeof(cl_mem), &_output_heat_matrix);
-    err |= clSetKernelArg(_heat_kernel, 2, sizeof(cl_mem), &_width_buffer);
-    err |= clSetKernelArg(_heat_kernel, 3, sizeof(cl_mem), &_height_buffer);
-    err |= clSetKernelArg(_heat_kernel, 4, sizeof(cl_mem), &_r_coeff_buffer);
+    err |= clSetKernelArg(_heat_kernel, 2, sizeof(int), &width);
+    err |= clSetKernelArg(_heat_kernel, 3, sizeof(int), &height);
+    err |= clSetKernelArg(_heat_kernel, 4, sizeof(float), &ratio);
     if (err < 0)
         throw std::runtime_error("Unable to create kernel arguments");
 

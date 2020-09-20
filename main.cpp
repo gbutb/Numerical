@@ -21,7 +21,7 @@ int main(void) {
     options.width = 256;
     options.height = 256;
     options._space_step = 1.0;
-    options._time_step = 0.1;
+    options._time_step = 1/5.0;
     Heat heat(numerical._context, numerical._device, options);
 
     cv::Mat input = cv::Mat::zeros(options.height, options.width, CV_32FC1);
@@ -29,7 +29,7 @@ int main(void) {
         for (int j = -10; j < 10; ++j)
             input.at<float>(128 + i, 128 + j) = 100.0;
     cv::Mat output = cv::Mat::zeros(options.height, options.width, CV_32FC1);
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0;; ++i) {
         heat.singleStep(input, output, numerical._queue);
         output.copyTo(input);
 
@@ -37,8 +37,9 @@ int main(void) {
         output.convertTo(show, CV_8U, 255);
         cv::applyColorMap(show, show, cv::COLORMAP_JET);
         cv::imshow("out", show);
-        cv::waitKey(1);
-        printf("%d/%d\n", i+1, 1000);
+        printf("%d\n", i);
+        if (cv::waitKey(1) % 256 == 'q')
+            break;
     }
 
     double minVal, maxVal;

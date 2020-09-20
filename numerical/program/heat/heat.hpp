@@ -31,9 +31,6 @@ class Heat : public Program {
     cl_mem _input_heat_matrix;
     cl_mem _output_heat_matrix;
 
-    cl_mem _width_buffer, _height_buffer;
-    cl_mem _r_coeff_buffer;
-
  public:
     Heat(cl_context context, cl_device_id device, SolverOptions options); 
     ~Heat();
