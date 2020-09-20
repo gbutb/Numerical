@@ -22,6 +22,13 @@ struct SolverOptions {
 
    int width;
    int height;
+
+   SolverOptions(int width, int height, float time_step, float space_step) {
+      this->width = width;
+      this->height = height;
+      this->_time_step = time_step;
+      this->_space_step = space_step;
+   }
 };
 
 class Heat : public Program {

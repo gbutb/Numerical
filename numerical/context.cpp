@@ -12,7 +12,7 @@
 
 Context::Context() {
     int err;
-
+    printf("Called\n");
     _device = create_device();
     _context = clCreateContext(NULL, 1, &_device, NULL, NULL, &err);
     if (err < 0)

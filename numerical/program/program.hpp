@@ -14,7 +14,7 @@
 
 class Program {
  private:
-    Context _context;
+    Context& _context;
 
     cl_program _program;
 

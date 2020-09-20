@@ -29,12 +29,7 @@ class Context {
     Context();
     ~Context();
 
-    Context(const Context& context) {
-        _context = context._context;
-        _device = context._device;
-        _queue = context._queue;
-    }
-
+    Context(const Context& context) = delete;
     Context & operator=(const Context&) = delete;
 
     /**
