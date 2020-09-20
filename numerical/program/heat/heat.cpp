@@ -7,7 +7,7 @@
 
 #include "heat.hpp"
 
-Heat::Heat(cl_context context, cl_device_id device, SolverOptions options) : Program::Program(context, device) {
+Heat::Heat(Context& context, SolverOptions options) : Program::Program(context) {
     int err;
 
     // Parse options
@@ -19,24 +19,24 @@ Heat::Heat(cl_context context, cl_device_id device, SolverOptions options) : Pro
         printf("Ratio is %f > 1/4.0. The solution might not converge!\n", ratio);
 
     // Initialize program
-    _program = build_program(
+    getProgram() = build_program(
         #include "heat.cl"
     );
 
     // Initialize kernel
-    _heat_kernel = clCreateKernel(_program, "single_heat_step", &err);
+    _heat_kernel = clCreateKernel(getProgram(), "single_heat_step", &err);
     if (err < 0)
         throw std::runtime_error("Unable to create kernel");
 
     // Allocate I/O buffers
     _input_heat_matrix = clCreateBuffer(
-        _context, CL_MEM_READ_ONLY,
+        getContext().getCLContext(), CL_MEM_READ_ONLY,
         width * height * sizeof(float), NULL, &err);
     if (err < 0)
         throw std::runtime_error("Unable to transfer input matrix");
 
     _output_heat_matrix = clCreateBuffer(
-        _context, CL_MEM_READ_WRITE,
+        getContext().getCLContext(), CL_MEM_READ_WRITE,
         width * height * sizeof(float), NULL, &err);
     if (err < 0)
         throw std::runtime_error("Unable to initialize output buffer");
@@ -48,10 +48,13 @@ Heat::~Heat() {
     clReleaseKernel(_heat_kernel);
 }
 
-void Heat::singleStep(cv::Mat& input, cv::Mat& output, cl_command_queue queue) {
+void Heat::singleStep(cv::Mat& input, cv::Mat& output) {
     int err;
     CV_Assert(input.type() == CV_32FC1);
     CV_Assert(output.type() == CV_32FC1);
+
+    // Prepare the queue
+    cl_command_queue queue = getContext().getCommandQueue();
 
     // Allocate memories
     err = clEnqueueWriteBuffer(

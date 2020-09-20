@@ -1,16 +1,16 @@
 /**
- * numerical.cpp
+ * context.cpp
  * -------------
  * 
- * Contains implementation of Numerical.
+ * Contains implementation of Context.
  */
 
 #include <stdexcept>
-#include "numerical.hpp"
+#include "context.hpp"
 #include "program/heat/heat.hpp"
 
 
-Numerical::Numerical() {
+Context::Context() {
     int err;
 
     _device = create_device();
@@ -22,12 +22,12 @@ Numerical::Numerical() {
         throw std::runtime_error("Unable to create a command queue");
 }
 
-Numerical::~Numerical() {
+Context::~Context() {
     clReleaseCommandQueue(_queue);
     clReleaseContext(_context);
 }
 
-cl_device_id Numerical::create_device() {
+cl_device_id Context::create_device() {
     cl_platform_id platform;
     cl_device_id dev;
     int err;

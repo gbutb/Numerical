@@ -11,18 +11,18 @@
 // Load libs
 #include <opencv2/opencv.hpp>
 
-#include <numerical/numerical.hpp>
+#include <numerical/context.hpp>
 #include <numerical/program/heat/heat.hpp>
 
 int main(void) {
-    Numerical numerical;
+    Context context;
 
     SolverOptions options;
     options.width = 256;
     options.height = 300;
     options._space_step = 1.0;
     options._time_step = 1/10.0;
-    Heat heat(numerical._context, numerical._device, options);
+    Heat heat(context, options);
 
     cv::Mat input = cv::Mat::zeros(options.height, options.width, CV_32FC1);
     for (int y = -10; y < 10; ++y)
@@ -30,7 +30,7 @@ int main(void) {
             input.at<float>(128 + 2*y, 128 + x) = 100.0;
     cv::Mat output = cv::Mat::zeros(options.height, options.width, CV_32FC1);
     for (int i = 0;; ++i) {
-        heat.singleStep(input, output, numerical._queue);
+        heat.singleStep(input, output);
         output.copyTo(input);
 
         cv::Mat show;

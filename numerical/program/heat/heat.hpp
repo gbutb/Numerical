@@ -11,6 +11,8 @@
 
 #include <math.h>
 #include <opencv2/opencv.hpp>
+
+#include "numerical/context.hpp"
 #include "numerical/program/program.hpp"
 
 
@@ -32,7 +34,7 @@ class Heat : public Program {
     cl_mem _output_heat_matrix;
 
  public:
-    Heat(cl_context context, cl_device_id device, SolverOptions options); 
+    Heat(Context& context, SolverOptions options); 
     ~Heat();
 
     /**
@@ -40,7 +42,7 @@ class Heat : public Program {
      * @param input Input data.
      * @param output Location to which the output will be written.
      */
-    void singleStep(cv::Mat& input, cv::Mat& output, cl_command_queue queue);
+    void singleStep(cv::Mat& input, cv::Mat& output);
 };
 
 #endif  // NUMERICAL_PROGRAM_HEAT_HEAT_HPP_
