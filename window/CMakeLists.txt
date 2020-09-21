@@ -13,7 +13,8 @@ include_directories(
 add_library(
     window
     window.cpp
-    camera.cpp)
+    camera.cpp
+    shader/shader.cpp)
 
 target_link_libraries(
     window
