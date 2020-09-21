@@ -12,7 +12,7 @@ int get_tid(int x, int y, int width, int height) {
 }
 
 bool is_outside_bounds(int x, int y, int width, int height) {
-    return (x < 0 || y < 0 || x >= width || y >= height);
+    return (x < 0 || y < 0 || x >= height || y >= width);
 }
 
 int get_value_at(int x, int y, int width, int height, __global float* matrix) {

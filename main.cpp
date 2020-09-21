@@ -19,9 +19,10 @@
  */
 cv::Mat initializeHeatmap(int width, int height) {
     cv::Mat input = cv::Mat::zeros(height, width, CV_32FC1);
-    for (int y = -10; y < 10; ++y)
-        for (int x = -10; x < 10; ++x)
-            input.at<float>(128 + 2*y, 128 + x) = (x*sin(x/5.0) + y*sin(y/5.0));
+    for (int y = -height/2; y < height/2 - 1; ++y)
+        for (int x = -width/2; x < width/2 - 1; ++x)
+            input.at<float>(height/2 + y, width/2 + x) =
+                (1 - pow(2*x/(float)width, 2))*(1 - pow(2*y/(float)height, 2));
     return input;
 }
 
@@ -29,17 +30,37 @@ void printUsage() {
     printf("Usage: main -w [width] -h [height] -t [time_step] -x [space_step]\n");
 }
 
-bool displayMat(const char* win_name, const cv::Mat& mat) {
+static void onMouse(int event, int x, int y, int f, void* data){
+    cv::Mat* mat = (cv::Mat*)data;
+
+    // Initialize canvas
+    cv::Mat canvas = cv::Mat::zeros(cv::Size(500, 100), CV_8U);
+
+    // Draw the text onto canvas
+    char heatText[500];
+    sprintf(heatText, "Heat: %f", mat->at<float>(y, x));
+    cv::putText(
+        canvas, heatText, cv::Point(0, 50),
+        cv::FONT_HERSHEY_DUPLEX,
+        1.0, CV_RGB(255, 255, 255), 2);
+    
+    // Display canvas
+    cv::imshow("value", canvas);
+}
+
+bool displayMat(const char* win_name, cv::Mat& mat, double scale, bool text) {
     cv::Mat show;
-    mat.convertTo(show, CV_8U, 255);
+    static_cast<cv::Mat>(mat / scale).convertTo(show, CV_8U, 255);
     cv::applyColorMap(show, show, cv::COLORMAP_JET);
+    if (text)
+        cv::setMouseCallback(win_name, onMouse, &mat);
     cv::imshow(win_name, show);
     if (cv::waitKey(1) % 256 == 'q')
         return true;
     return false;
 }
 
-void startVisualization(Heat& heat, cv::Mat input) {
+void startVisualization(Heat& heat, cv::Mat input, bool text = false) {
     cv::Mat current = input.clone();
     double maxVal = -1;
     cv::minMaxLoc(current, NULL, &maxVal, NULL, NULL);
@@ -48,7 +69,7 @@ void startVisualization(Heat& heat, cv::Mat input) {
         current.copyTo(input);
 
         printf("%d\n", i);
-        if (displayMat("Window", current / maxVal))
+        if (displayMat("Window", current, maxVal, text))
             break;
     }
 
@@ -58,10 +79,11 @@ void startVisualization(Heat& heat, cv::Mat input) {
 int main(int argn, char** argv) {
     int width = -1, height = -1;
     float time_step = -1, space_step = -1;
+    bool text = false;
 
     // Parse args
     int opt;
-    while ((opt = getopt(argn, argv, "w:h:t:x:")) != -1) {
+    while ((opt = getopt(argn, argv, "w:h:t:x:v")) != -1) {
         switch (opt) {
             case 'w':
                 width = atoi(optarg);
@@ -74,6 +96,9 @@ int main(int argn, char** argv) {
                 break;
             case 'x':
                 space_step = atof(optarg);
+                break;
+            case 'v':
+                text = true;
                 break;
         }
     }
@@ -92,7 +117,7 @@ int main(int argn, char** argv) {
     cv::Mat heat_map = initializeHeatmap(width, height);
 
     // Start loop
-    startVisualization(heat, heat_map);
+    startVisualization(heat, heat_map, text);
 
     return EXIT_SUCCESS;
 }
