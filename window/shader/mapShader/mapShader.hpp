@@ -30,7 +30,7 @@ class MapShader : public Shader {
     /**
      * Loads matrix into buffers.
      */
-    void loadMatrix(cv::Mat& matrix);
+    void loadMatrix(const cv::Mat& matrix);
 
 
     void render();

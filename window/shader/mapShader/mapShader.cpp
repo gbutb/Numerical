@@ -39,7 +39,7 @@ struct Point {
     float value;
 };
 
-void MapShader::loadMatrix(cv::Mat& matrix) {
+void MapShader::loadMatrix(const cv::Mat& matrix) {
     CV_Assert(matrix.type() == CV_32FC1);
     use();
 
@@ -70,7 +70,7 @@ void MapShader::render() {
         glBindBuffer(GL_ARRAY_BUFFER, _VBO);
             glEnableVertexAttribArray(0);
             for (int i = 0; i < _height; ++i) {
-                glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 100 * sizeof(Point), (void *)(i * sizeof(Point)));
+                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, _width * sizeof(Point), (void *)(i * sizeof(Point)));
                 glDrawArrays(GL_LINE_STRIP, 0, _height);
             }
         glBindBuffer(GL_ARRAY_BUFFER, 0);
