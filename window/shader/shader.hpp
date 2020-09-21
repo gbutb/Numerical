@@ -30,7 +30,7 @@ class Shader {
     /**
      * Renders shader;
      */
-    virtual void render();
+    virtual void render() {}
 
     /////////////
     // Setters //

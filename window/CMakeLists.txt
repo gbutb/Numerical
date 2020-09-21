@@ -14,7 +14,8 @@ add_library(
     window
     window.cpp
     camera.cpp
-    shader/shader.cpp)
+    shader/shader.cpp
+    shader/mapShader/mapShader.cpp)
 
 target_link_libraries(
     window

@@ -6,7 +6,7 @@
  */
 
 #include "window.hpp"
-
+#include <glm/glm/gtx/string_cast.hpp>
 
 Window::Window(string window_title, int width, int height) :
         _width(width), _height(height) {
@@ -41,6 +41,10 @@ Window::Window(string window_title, int width, int height) :
     glEnable(GL_DEPTH_TEST);
 
     glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetFramebufferSizeCallback(_window,
+    [] (GLFWwindow* window, int width, int height) {
+        glViewport(0, 0, width, height);
+    });
     glfwSetCursorPosCallback(_window,
         [] (GLFWwindow * win, double xpos, double ypos) {
             auto gui = reinterpret_cast<Window*>(
@@ -51,14 +55,20 @@ Window::Window(string window_title, int width, int height) :
             // Compute offsets
             float xoffset = xpos - lastX;
             float yoffset = lastY - ypos;
+            lastX = xpos;
+            lastY = ypos;
 
             float sensitivity = .2f;
             xoffset *= sensitivity;
             yoffset *= sensitivity;
 
             if (gui->getCamera() != nullptr)
-                gui->getCamera()->rotate(xoffset, yoffset);
+                gui->getCamera()->rotate(xoffset, -yoffset);
         });
+
+    map_shader = std::make_shared<MapShader>(100, 100);
+    cv::Mat mat = cv::Mat::zeros(100, 100, CV_32FC1);
+    map_shader->loadMatrix(mat);
 }
 
 Window::~Window() {
@@ -71,7 +81,6 @@ void Window::attachCamera(ptr_Camera camera) {
     _camera = camera;
 }
 
-
 Window::operator bool() {
     // Render and poll
     glfwSwapBuffers(_window);
@@ -80,7 +89,6 @@ Window::operator bool() {
     // Clear color and depth buffers
     glClearColor(.1f, .1f, .1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, _width, _height);
 
     GLenum err;
     if ((err = glGetError()) != GL_NO_ERROR) {
@@ -89,7 +97,10 @@ Window::operator bool() {
 
     _handleKeys();
 
-    // TODO: Render shaders
+    map_shader->setMatrix("model", glm::value_ptr(_camera->getModel()));
+    map_shader->setMatrix("projection", glm::value_ptr(_camera->getProjection()));
+
+    map_shader->render();
 
     return !glfwWindowShouldClose(_window);
 }
@@ -112,21 +123,24 @@ void Window::_handleKeys() {
 
     // Camera controls
     if (_camera == nullptr) return;
-    if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
-        _camera->translate(glm::vec3(1, 0, 0));
-
-    if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
-        _camera->translate(glm::vec3(-1, 0, 0));
-
     if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
-        _camera->translate(glm::vec3(0, 1, 0));
+        _camera->translate(glm::vec3(-0.05, 0, 0));
 
     if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
-        _camera->translate(glm::vec3(0, -1, 0));
+        _camera->translate(glm::vec3(0.05, 0, 0));
 
     if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        _camera->translate(glm::vec3(0, 0, 1));
+        _camera->translate(glm::vec3(0, 0.05, 0));
 
     if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-        _camera->translate(glm::vec3(0, 0, -1));
+        _camera->translate(glm::vec3(0, -0.05, 0));
+
+    if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
+        _camera->translate(glm::vec3(0, 0, -0.05));
+
+    if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
+        _camera->translate(glm::vec3(0, 0, 0.05));
+    
+    if (glfwGetKey(_window, GLFW_KEY_R) == GLFW_PRESS)
+        _camera->reset();
 }

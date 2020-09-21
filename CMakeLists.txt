@@ -49,4 +49,5 @@ target_link_libraries(
 add_executable(mainWindow mainWindow.cpp)
 target_link_libraries(
     mainWindow
-    window)
+    window
+    ${OpenCV_LIBS})

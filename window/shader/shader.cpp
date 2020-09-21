@@ -55,6 +55,7 @@ Shader::Shader(const char* vertex_source, const char* fragment_source) {
 
     glAttachShader(_shader_id, vertex_shader);
     glAttachShader(_shader_id, fragment_shader);
+    glLinkProgram(_shader_id);
 
     // Handle error
     int success;

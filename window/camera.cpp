@@ -10,8 +10,8 @@
 Camera::Camera(int width, int height) {
     // Initialize projection matrix
     _projection = glm::perspective<float>(
-        60.0 / 180.0 * glm::pi<float>(),
-        width / static_cast<float>(height), .01f, 10.0f);
+        glm::radians(45.0f),
+        width / static_cast<float>(height), .1f, 100.0f);
 }
 
 void Camera::enable() {

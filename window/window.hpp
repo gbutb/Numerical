@@ -16,10 +16,18 @@
 #include <string>
 using std::string;
 
+#include <memory>
+using std::shared_ptr;
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <math.h>
+#include <glm/glm/gtc/type_ptr.hpp>
+
 #include "camera.hpp"
+
+#include "shader/mapShader/mapShader.hpp"
 
 class Window {
  private:
@@ -31,6 +39,8 @@ class Window {
 
     // Events
     void _handleKeys();
+
+    shared_ptr<MapShader> map_shader;
 
  protected:
     int _width, _height;
