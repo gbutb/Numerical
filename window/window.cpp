@@ -65,10 +65,6 @@ Window::Window(string window_title, int width, int height) :
             if (gui->getCamera() != nullptr)
                 gui->getCamera()->rotate(xoffset, -yoffset);
         });
-
-    map_shader = std::make_shared<MapShader>(100, 100);
-    cv::Mat mat = cv::Mat::zeros(100, 100, CV_32FC1);
-    map_shader->loadMatrix(mat);
 }
 
 Window::~Window() {
@@ -96,11 +92,6 @@ Window::operator bool() {
     }
 
     _handleKeys();
-
-    map_shader->setMatrix("model", glm::value_ptr(_camera->getModel()));
-    map_shader->setMatrix("projection", glm::value_ptr(_camera->getProjection()));
-
-    map_shader->render();
 
     return !glfwWindowShouldClose(_window);
 }

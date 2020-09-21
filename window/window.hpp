@@ -27,8 +27,6 @@ using std::shared_ptr;
 
 #include "camera.hpp"
 
-#include "shader/mapShader/mapShader.hpp"
-
 class Window {
  private:
     // Main window
@@ -39,8 +37,6 @@ class Window {
 
     // Events
     void _handleKeys();
-
-    shared_ptr<MapShader> map_shader;
 
  protected:
     int _width, _height;
