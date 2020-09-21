@@ -20,7 +20,7 @@ int main(void) {
 
     // Configure solver
     Context context;
-    SolverOptions options(500, 500, 0.001, 1.0);
+    SolverOptions options(700, 700, 0.001, 1.0);
 
     shared_ptr<Heat> heat(new Heat(context, options));
     window.registerProgram(heat);

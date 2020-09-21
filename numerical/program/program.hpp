@@ -45,6 +45,9 @@ class Program {
 
     inline cl_program& getProgram() { return _program; }
     inline Context& getContext() { return _context; }
+
+    virtual int getWidth() { return 0; }
+    virtual int getHeight() { return 0; }
 };
 
 #endif  // NUMERICAL_PROGRAM_PROGRAM_HPP_

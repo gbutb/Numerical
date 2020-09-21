@@ -15,36 +15,45 @@ cv::Mat initializeHeatmap(int width, int height) {
     for (int y = -height/2; y < height/2 - 1; ++y)
         for (int x = -width/2; x < width/2 - 1; ++x)
             input.at<float>(height/2 + y, width/2 + x) =
-                (1 - pow(2*x/(float)width, 2))*(1 - pow(2*y/(float)height, 2)) > 0.5 ? 1 : 0;//*pow(sin((x + y)/100.0), 2);
+                (1 - pow(2*x/(float)width, 2))*(1 - pow(2*y/(float)height, 2));//*pow(sin((x + y)/100.0), 2);
     return input;
 }
 
 
 Numerical::Numerical(string window_title, int width, int height) :
         Window::Window(window_title, width, height) {
-    // Initialize shader
-    map_shader = std::make_shared<MapShader>(500, 500);
-    state_mat = initializeHeatmap(500, 500);
-
-    cv::minMaxLoc(state_mat, nullptr, &scale, nullptr, nullptr);
-    map_shader->loadMatrix(state_mat / scale);
 }
 
 Numerical::~Numerical() {
     Window::~Window();
 }
 
+void Numerical::registerProgram(shared_ptr<Program> program) {
+    // Initialize shader
+    map_shader = std::make_shared<MapShader>(program->getWidth(), program->getHeight());
+    state_mat = initializeHeatmap(program->getWidth(), program->getHeight());
+
+    cv::minMaxLoc(state_mat, nullptr, &scale, nullptr, nullptr);
+    map_shader->loadMatrix(state_mat / scale);
+
+    _program = program;
+}
+
 Numerical::operator bool() {
     bool result = Window::operator bool();
 
-    map_shader->setMatrix("model", glm::value_ptr(getCamera()->getModel()));
-    map_shader->setMatrix("projection", glm::value_ptr(getCamera()->getProjection()));
+    if (map_shader != nullptr) {
+        map_shader->setMatrix("model", glm::value_ptr(getCamera()->getModel()));
+        map_shader->setMatrix("projection", glm::value_ptr(getCamera()->getProjection()));
 
-    map_shader->render();
+        map_shader->render();
+    }
 
     if (_program != nullptr)
         _program->singleStep(state_mat, state_mat);
-    map_shader->loadMatrix(state_mat / scale);
+    
+    if (map_shader != nullptr)
+        map_shader->loadMatrix(state_mat / scale);
 
     return result;
 }

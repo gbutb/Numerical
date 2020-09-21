@@ -36,9 +36,7 @@ class Numerical : public Window {
     Numerical(string window_title, int width, int height);
     ~Numerical();
 
-    inline void registerProgram(shared_ptr<Program> program) {
-        _program = program;
-    }
+    void registerProgram(shared_ptr<Program> program); 
 
     /**
      * @returns true if window is available.
