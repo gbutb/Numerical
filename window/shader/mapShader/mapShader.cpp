@@ -41,19 +41,21 @@ void MapShader::loadMatrix(const cv::Mat& matrix) {
     setInt("width", _width);
     setInt("height", _height);
 
-    Point points[_height][_width];
+    Point* points = (Point*)malloc(sizeof(Point)*_width*_height);
     for (int y = 0; y < _height; ++y)
         for (int x = 0; x < _width; ++x)
-            points[y][x] = Point({
+            points[x + y*_width] = Point({
                 .x = static_cast<float>(x) / _width,
                 .y = static_cast<float>(y) / _height,
                 .value = matrix.at<float>(y, x)});
 
     glBindVertexArray(_VAO);
         glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(Point)*_width*_height, points, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
+    free(points);
 }
 
 void MapShader::render() {
