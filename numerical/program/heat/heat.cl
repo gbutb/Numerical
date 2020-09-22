@@ -1,12 +1,4 @@
 R""(
-int get_x(int tid, int width, int height) {
-    return (tid - tid % width) / width;
-}
-
-int get_y(int tid, int width, int height) {
-    return tid % width;
-}
-
 int get_tid(int x, int y, int width, int height) {
     return y + x * width;
 }
@@ -24,10 +16,10 @@ __kernel void single_heat_step(
         __global float* input_heat_matrix,
         __global float* output_heat_matrix,
         int width, int height, float r_coeff) {
-    int tid = get_global_id(0);
+    int y = get_global_id(0);
+    int x = get_global_id(1);
 
-    int x = get_x(tid, width, height);
-    int y = get_y(tid, width, height);
+    int tid = get_tid(x, y, width, height);
     if (is_outside_bounds(x, y, width, height)) return;
 
     output_heat_matrix[tid] = (1 - 4*r_coeff) * input_heat_matrix[tid] + r_coeff * (

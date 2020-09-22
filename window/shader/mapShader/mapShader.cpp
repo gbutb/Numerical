@@ -20,18 +20,12 @@ MapShader::MapShader(int width, int height) : Shader::Shader(
 
     _width = width;
     _height = height;
-
-    indices = new int[width*height];
-    for (int i = 0; i < width*height; ++i)
-        indices[i] = i;
 }
 
 MapShader::~MapShader() {
     Shader::~Shader();
     glDeleteVertexArrays(1, &_VAO);
 	glDeleteBuffers(1, &_VBO);
-
-    delete indices;
 }
 
 struct Point {

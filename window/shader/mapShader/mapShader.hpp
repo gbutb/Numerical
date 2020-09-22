@@ -20,9 +20,6 @@ class MapShader : public Shader {
 
     int _width, _height;
 
-    // Indices
-    int* indices;
-
  public:
     MapShader(int width, int height);
     ~MapShader();

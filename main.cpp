@@ -22,7 +22,7 @@ cv::Mat initializeHeatmap(int width, int height) {
     for (int y = -height/2; y < height/2 - 1; ++y)
         for (int x = -width/2; x < width/2 - 1; ++x)
             input.at<float>(height/2 + y, width/2 + x) =
-                (1 - pow(2*x/(float)width, 2))*(1 - pow(2*y/(float)height, 2))*pow(sin((x + y)/100.0), 2);
+                (1 - pow(2*x/(float)width, 2))*(1 - pow(2*y/(float)height, 2)) > 0.5 ? 100000 : 0;// *pow(sin((x + y)/100.0), 2);
     return input;
 }
 

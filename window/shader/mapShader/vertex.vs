@@ -11,10 +11,12 @@ uniform int width;
 uniform int height;
 
 out float value;
+out float depth;
 
 void main() {
     vec4 position = model * vec4(aPos.y, aPos.z / 3.0, aPos.x, 1.0);
     value = aPos.z;
+    depth = position.z;
 	gl_Position = projection *  position;
 }
 
