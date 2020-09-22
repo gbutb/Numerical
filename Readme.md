@@ -1,9 +1,10 @@
 # Numerical
 This repository contains implementations for various numerical methods for educational purposes.
 
-![HeatMap](assets/heat.png?raw=true "HeatMap")
-
 ## Heat Program
+
+<img src="assets/heat.png" width="440" height="266" />
+
 Currently the main script launches numerical solver of a heat equation. To launch it use:
 ```zsh
 > ./main -w [width] -h [height] -t [time_step] -x [space_step]
