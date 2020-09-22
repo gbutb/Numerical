@@ -50,7 +50,7 @@ int main(int argn, char** argv) {
     }
 
     ptr_Camera camera(new Camera(1280, 720));
-    Numerical window("Test", 1280, 720);
+    Numerical window("Heat 3D", 1280, 720);
     window.attachCamera(camera);
 
     // Configure solver
