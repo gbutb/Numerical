@@ -36,11 +36,18 @@ include_directories(
     ${EIGEN3_INCLUDE_DIR}
     ${OPENCL_INCLUDE_DIR})
 
+add_subdirectory(window/)
 add_subdirectory(numerical/)
 
 add_executable(main main.cpp)
 target_link_libraries(
     main
     "-framework OpenCL"
+    numerical
+    ${OpenCV_LIBS})
+
+add_executable(mainWindow mainWindow.cpp)
+target_link_libraries(
+    mainWindow
     numerical
     ${OpenCV_LIBS})

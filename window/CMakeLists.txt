@@ -1,4 +1,3 @@
-# numerical/CMakeLists.txt
 # Load OpenGL
 find_package(glfw3 3.1 REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -12,14 +11,14 @@ include_directories(
     ${GLM_INCLUDE_DIRS})
 
 add_library(
-    numerical
-    context.cpp
-    numerical.cpp
-    program/program.cpp
-    program/heat/heat.cpp)
+    window
+    window.cpp
+    camera.cpp
+    shader/shader.cpp
+    shader/mapShader/mapShader.cpp)
+
 target_link_libraries(
-    numerical
+    window
     glfw
     GLEW::glew
-    window
-    "-framework OpenCL")
+    ${OPENGL_gl_LIBRARY})

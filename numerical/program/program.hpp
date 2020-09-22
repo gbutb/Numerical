@@ -8,6 +8,9 @@
 #ifndef NUMERICAL_PROGRAM_PROGRAM_HPP_
 #define NUMERICAL_PROGRAM_PROGRAM_HPP_
 
+#include <math.h>
+#include <opencv2/opencv.hpp>
+
 #include <OpenCL/opencl.h>
 
 #include "numerical/context.hpp"
@@ -30,11 +33,21 @@ class Program {
     ~Program();
 
     /**
+     * Takes input matrix and passes it through kernel.
+     * @param input Input data.
+     * @param output Location to which the output will be written.
+     */
+    virtual void singleStep(cv::Mat& input, cv::Mat& output) {};
+
+    /**
      * Getters
      */
 
     inline cl_program& getProgram() { return _program; }
     inline Context& getContext() { return _context; }
+
+    virtual int getWidth() { return 0; }
+    virtual int getHeight() { return 0; }
 };
 
 #endif  // NUMERICAL_PROGRAM_PROGRAM_HPP_

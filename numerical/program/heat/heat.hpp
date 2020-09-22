@@ -50,6 +50,9 @@ class Heat : public Program {
      * @param output Location to which the output will be written.
      */
     void singleStep(cv::Mat& input, cv::Mat& output);
+
+    int getWidth() { return width; }
+    int getHeight() { return height; }
 };
 
 #endif  // NUMERICAL_PROGRAM_HEAT_HEAT_HPP_

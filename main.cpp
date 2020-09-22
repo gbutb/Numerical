@@ -22,7 +22,7 @@ cv::Mat initializeHeatmap(int width, int height) {
     for (int y = -height/2; y < height/2 - 1; ++y)
         for (int x = -width/2; x < width/2 - 1; ++x)
             input.at<float>(height/2 + y, width/2 + x) =
-                (1 - pow(2*x/(float)width, 2))*(1 - pow(2*y/(float)height, 2));
+                (1 - pow(2*x/(float)width, 2))*(1 - pow(2*y/(float)height, 2)) > 0.5 ? 100000 : 0;// *pow(sin((x + y)/100.0), 2);
     return input;
 }
 
@@ -60,16 +60,16 @@ bool displayMat(const char* win_name, cv::Mat& mat, double scale, bool text) {
     return false;
 }
 
-void startVisualization(Heat& heat, cv::Mat input, bool text = false) {
+void startVisualization(Program& program, cv::Mat input, bool text = false) {
     cv::Mat current = input.clone();
     double maxVal = -1;
     cv::minMaxLoc(current, NULL, &maxVal, NULL, NULL);
     for (int i = 0;; ++i) {
-        heat.singleStep(input, current);
+        program.singleStep(input, current);
         current.copyTo(input);
 
         printf("%d\n", i);
-        if (displayMat("Window", current, maxVal, text))
+        if (displayMat("Heatmap", current, maxVal, text))
             break;
     }
 
