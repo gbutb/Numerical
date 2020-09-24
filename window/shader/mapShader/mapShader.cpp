@@ -42,11 +42,12 @@ void MapShader::loadMatrix(const cv::Mat& matrix) {
     setInt("height", _height);
 
     Point* points = (Point*)malloc(sizeof(Point)*_width*_height);
+    int scale = MAX(_width, _height);
     for (int y = 0; y < _height; ++y)
         for (int x = 0; x < _width; ++x)
             points[x + y*_width] = Point({
-                .x = static_cast<float>(x) / _width,
-                .y = static_cast<float>(y) / _height,
+                .x = static_cast<float>(x) / scale,
+                .y = static_cast<float>(y) / scale,
                 .value = matrix.at<float>(y, x)});
 
     glBindVertexArray(_VAO);
@@ -66,7 +67,11 @@ void MapShader::render() {
         glBindBuffer(GL_ARRAY_BUFFER, _VBO);
             glEnableVertexAttribArray(0);
             for (int i = 0; i < _height; ++i) {
-                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, _width * sizeof(Point), (void *)(i * sizeof(Point)));
+                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (void *) (i * _width * sizeof(Point)));
+                glDrawArrays(GL_LINE_STRIP, 0, _width);
+            }
+            for (int i = 0; i < _width; ++i) {
+                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, _width * sizeof(Point), (void*) (i * sizeof(Point)));
                 glDrawArrays(GL_LINE_STRIP, 0, _height);
             }
         glBindBuffer(GL_ARRAY_BUFFER, 0);

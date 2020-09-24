@@ -74,7 +74,7 @@ void Heat::singleStep(cv::Mat& input, cv::Mat& output) {
         throw std::runtime_error("Unable to create kernel arguments");
 
     // Enqueue the kernel
-    size_t global_size[] = {static_cast<size_t>(height), static_cast<size_t>(width)};
+    size_t global_size[] = {static_cast<size_t>(width), static_cast<size_t>(height)};
     size_t local_size[] = {16, 16};
     err = clEnqueueNDRangeKernel(queue, _heat_kernel, 2, NULL, global_size, local_size, 0, NULL, NULL);
     if (err < 0)

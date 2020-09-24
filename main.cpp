@@ -19,10 +19,9 @@
  */
 cv::Mat initializeHeatmap(int width, int height) {
     cv::Mat input = cv::Mat::zeros(height, width, CV_32FC1);
-    for (int y = -height/2; y < height/2 - 1; ++y)
-        for (int x = -width/2; x < width/2 - 1; ++x)
-            input.at<float>(height/2 + y, width/2 + x) =
-                (1 - pow(2*x/(float)width, 2))*(1 - pow(2*y/(float)height, 2)) > 0.5 ? 100000 : 0;// *pow(sin((x + y)/100.0), 2);
+    for (int y = -height/4; y < height/4 - 1; ++y)
+        for (int x = -width/4; x < width/4 - 1; ++x)
+            input.at<float>(height/2 + y, width/2 + x) = 100000;
     return input;
 }
 
