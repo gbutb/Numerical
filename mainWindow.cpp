@@ -11,7 +11,7 @@
 #include "numerical/numerical.hpp"
 #include "window/camera.hpp"
 
-#include "numerical/program/heat/heat.hpp"
+#include <numerical/program/wave/wave.hpp>
 
 void printUsage() {
     printf("Usage: mainWindow -w [width] -h [height] -t [time_step] -x [space_step]\n");
@@ -50,15 +50,15 @@ int main(int argn, char** argv) {
     }
 
     ptr_Camera camera(new Camera(1280, 720));
-    Numerical window("Heat 3D", 1280, 720);
+    Numerical window("Wave 3D", 1280, 720);
     window.attachCamera(camera);
 
     // Configure solver
     Context context;
     SolverOptions options(width, height, time_step, space_step);
 
-    shared_ptr<Heat> heat(new Heat(context, options));
-    window.registerProgram(heat);
+    shared_ptr<Wave> wave(new Wave(context, options));
+    window.registerProgram(wave);
 
     while (window) {}
     return EXIT_SUCCESS;

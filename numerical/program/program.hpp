@@ -15,6 +15,22 @@
 
 #include "numerical/context.hpp"
 
+struct SolverOptions {
+   double _time_step;
+   double _space_step;
+
+   int width;
+   int height;
+
+   SolverOptions(int width, int height, float time_step, float space_step) {
+      this->width = width;
+      this->height = height;
+      this->_time_step = time_step;
+      this->_space_step = space_step;
+   }
+};
+
+
 class Program {
  private:
     Context& _context;
