@@ -7,16 +7,6 @@
 
 #include "numerical.hpp"
 
-/**
- * @return Initial condition u(0, -) s.t. it vanishes on boundary.
- */
-cv::Mat initializeHeatmap(int width, int height) {
-    cv::Mat input = cv::Mat::zeros(height, width, CV_32FC1);
-    for (int y = -height/4; y < height/4 - 1; ++y)
-        for (int x = -width/4; x < width/4 - 1; ++x)
-            input.at<float>(height/2 + y, width/2 + x) = 10000000; 
-    return input;
-}
 
 Numerical::Numerical(string window_title, int width, int height) :
         Window::Window(window_title, width, height) {
@@ -26,13 +16,23 @@ Numerical::~Numerical() {
     Window::~Window();
 }
 
-void Numerical::registerProgram(shared_ptr<Program> program) {
+cv::Mat toSingle(const cv::Mat& input) {
+    cv::Mat single;
+    cv::extractChannel(input, single, input.channels() - 1);
+    return single;
+}
+
+void Numerical::registerProgram(shared_ptr<Program> program, std::function<cv::Mat(int, int)> initialCondition) {
+    this->_initialCondition = initialCondition;
+
     // Initialize shader
     map_shader = std::make_shared<MapShader>(program->getWidth(), program->getHeight());
-    state_mat = initializeHeatmap(program->getWidth(), program->getHeight());
+    state_mat = initialCondition(program->getWidth(), program->getHeight());
 
     cv::minMaxLoc(state_mat, nullptr, &scale, nullptr, nullptr);
-    map_shader->loadMatrix(state_mat / scale);
+
+
+    map_shader->loadMatrix(toSingle(state_mat / scale));
 
     _program = program;
 }
@@ -51,7 +51,7 @@ Numerical::operator bool() {
         _program->singleStep(state_mat, state_mat);
     
     if (map_shader != nullptr)
-        map_shader->loadMatrix(state_mat / scale);
+        map_shader->loadMatrix(toSingle(state_mat / scale));
 
     return result;
 }

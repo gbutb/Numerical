@@ -12,16 +12,19 @@
 #include <opencv2/opencv.hpp>
 
 #include <numerical/context.hpp>
-#include <numerical/program/heat/heat.hpp>
+#include <numerical/program/wave/wave.hpp>
 
 /**
  * @return Initial condition u(0, -) s.t. it vanishes on boundary.
  */
 cv::Mat initializeHeatmap(int width, int height) {
-    cv::Mat input = cv::Mat::zeros(height, width, CV_32FC1);
-    for (int y = -height/4; y < height/4 - 1; ++y)
-        for (int x = -width/4; x < width/4 - 1; ++x)
-            input.at<float>(height/2 + y, width/2 + x) = 100000;
+    cv::Mat input = cv::Mat::zeros(height, width, CV_32FC2);
+    int downscale = 16;
+    for (int y = -height/downscale; y < height/downscale - 1; ++y)
+        for (int x = -width/downscale; x < width/downscale- 1; ++x)
+            input.at<cv::Vec2f>(height/2 + y, width/2 + x) = cv::Vec2f(
+                10*cos(3.1415*x*downscale/(2*width))*cos(3.1415*y*downscale/(2*height)),
+                10*cos(3.1415*x*downscale/(2*width))*cos(3.1415*y*downscale/(2*height)));
     return input;
 }
 
@@ -49,8 +52,9 @@ static void onMouse(int event, int x, int y, int f, void* data){
 
 bool displayMat(const char* win_name, cv::Mat& mat, double scale, bool text) {
     cv::Mat show;
-    static_cast<cv::Mat>(mat / scale).convertTo(show, CV_8U, 255);
-    cv::applyColorMap(show, show, cv::COLORMAP_JET);
+    cv::extractChannel((mat + scale) / (2 *scale), show, mat.channels() - 1);
+    show.convertTo(show, CV_8U, 255);
+    cv::applyColorMap(show, show, cv::COLORMAP_TWILIGHT);
     if (text)
         cv::setMouseCallback(win_name, onMouse, &mat);
     cv::imshow(win_name, show);
@@ -112,11 +116,11 @@ int main(int argn, char** argv) {
     Context context;
     SolverOptions options(width, height, time_step, space_step);
 
-    Heat heat(context, options);
-    cv::Mat heat_map = initializeHeatmap(width, height);
+    Wave wave(context, options);
+    cv::Mat wave_map = initializeHeatmap(width, height);
 
     // Start loop
-    startVisualization(heat, heat_map, text);
+    startVisualization(wave, wave_map, text);
 
     return EXIT_SUCCESS;
 }

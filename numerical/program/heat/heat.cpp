@@ -33,7 +33,7 @@ Heat::Heat(Context& context, SolverOptions options) : Program::Program(context) 
         getContext().getCLContext(), CL_MEM_READ_ONLY,
         width * height * sizeof(float), NULL, &err);
     if (err < 0)
-        throw std::runtime_error("Unable to transfer input matrix");
+        throw std::runtime_error("Unable to initialize input matrix");
 
     _output_heat_matrix = clCreateBuffer(
         getContext().getCLContext(), CL_MEM_READ_WRITE,

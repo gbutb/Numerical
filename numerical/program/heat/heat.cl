@@ -7,7 +7,7 @@ bool is_outside_bounds(int x, int y, int width, int height) {
     return (y < 0 || x < 0 || y >= height || x >= width);
 }
 
-int get_value_at(int x, int y, int width, int height, __global float* matrix) {
+float get_value_at(int x, int y, int width, int height, __global float* matrix) {
     if (is_outside_bounds(x, y, width, height)) return 0;
     return matrix[get_tid(x, y, width, height)];
 }
