@@ -17,6 +17,20 @@ void printUsage() {
     printf("Usage: mainWindow -w [width] -h [height] -t [time_step] -x [space_step]\n");
 }
 
+/**
+ * @return Initial condition u(0, -) s.t. it vanishes on boundary.
+ */
+cv::Mat initializeWave(int width, int height) {
+    cv::Mat input = cv::Mat::zeros(height, width, CV_32FC2);
+    int downscale = 16;
+    for (int y = -height/downscale; y < height/downscale - 1; ++y)
+        for (int x = -width/downscale; x < width/downscale- 1; ++x)
+            input.at<cv::Vec2f>(height/2 + y, width/2 + width/8 + x) = cv::Vec2f(
+                10*cos(3.1415*x*downscale/(2*width))*cos(3.1415*y*downscale/(2*height)),
+                10*cos(3.1415*x*downscale/(2*width))*cos(3.1415*y*downscale/(2*height)));
+    return input;
+}
+
 int main(int argn, char** argv) {
     int width = -1, height = -1;
     float time_step = -1, space_step = -1;
@@ -58,7 +72,7 @@ int main(int argn, char** argv) {
     SolverOptions options(width, height, time_step, space_step);
 
     shared_ptr<Wave> wave(new Wave(context, options));
-    window.registerProgram(wave);
+    window.registerProgram(wave, initializeWave);
 
     while (window) {}
     return EXIT_SUCCESS;
