@@ -52,9 +52,9 @@ static void onMouse(int event, int x, int y, int f, void* data){
 
 bool displayMat(const char* win_name, cv::Mat& mat, double scale, bool text) {
     cv::Mat show;
-    cv::extractChannel(mat / scale, show, mat.channels() - 1);
+    cv::extractChannel((mat + scale) / (2 *scale), show, mat.channels() - 1);
     show.convertTo(show, CV_8U, 255);
-    cv::applyColorMap(show, show, cv::COLORMAP_JET);
+    cv::applyColorMap(show, show, cv::COLORMAP_TWILIGHT);
     if (text)
         cv::setMouseCallback(win_name, onMouse, &mat);
     cv::imshow(win_name, show);

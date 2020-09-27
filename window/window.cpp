@@ -115,23 +115,31 @@ void Window::_handleKeys() {
     // Camera controls
     if (_camera == nullptr) return;
     if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
-        _camera->translate(glm::vec3(-0.05, 0, 0));
+        _camera->translate(glm::vec3(-_speed, 0, 0));
 
     if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
-        _camera->translate(glm::vec3(0.05, 0, 0));
+        _camera->translate(glm::vec3(_speed, 0, 0));
 
     if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        _camera->translate(glm::vec3(0, 0.05, 0));
+        _camera->translate(glm::vec3(0, _speed, 0));
 
     if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-        _camera->translate(glm::vec3(0, -0.05, 0));
+        _camera->translate(glm::vec3(0, -_speed, 0));
 
     if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
-        _camera->translate(glm::vec3(0, 0, -0.05));
+        _camera->translate(glm::vec3(0, 0, -_speed));
 
     if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
-        _camera->translate(glm::vec3(0, 0, 0.05));
+        _camera->translate(glm::vec3(0, 0, _speed));
+
+    if (glfwGetKey(_window, GLFW_KEY_UP) == GLFW_PRESS)
+        _speed += 0.001;
     
-    if (glfwGetKey(_window, GLFW_KEY_R) == GLFW_PRESS)
+    if (glfwGetKey(_window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        _speed -= 0.001;
+
+    if (glfwGetKey(_window, GLFW_KEY_R) == GLFW_PRESS) {
+        _speed = 0.01;
         _camera->reset();
+    }
 }
