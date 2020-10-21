@@ -17,7 +17,9 @@ add_library(
     numerical.cpp
     program/program.cpp
     program/heat/heat.cpp
-    program/wave/wave.cpp)
+    program/wave/wave.cpp
+    program/laplace/laplace.cpp)
+
 target_link_libraries(
     numerical
     glfw

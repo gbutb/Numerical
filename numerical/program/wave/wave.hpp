@@ -33,7 +33,7 @@ class Wave : public Program {
      * @param input two-channel input data. CV_32FC2.
      * @param output Location to which the output will be written to. CV_32FC2.
      */
-    void singleStep(cv::Mat& input, cv::Mat& output);
+    void singleStep(cv::Mat& input, cv::Mat& output, int num_iterations = 10);
 
     int getWidth() { return width; }
     int getHeight() { return height; }

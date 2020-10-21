@@ -47,7 +47,7 @@ Wave::~Wave() {
     clReleaseKernel(_wave_kernel);
 }
 
-void Wave::singleStep(cv::Mat& input, cv::Mat& output) {
+void Wave::singleStep(cv::Mat& input, cv::Mat& output, int num_iterations) {
     int err;
     CV_Assert(input.type() == CV_32FC2);
     CV_Assert(output.type() == CV_32FC2);

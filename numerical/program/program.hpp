@@ -53,7 +53,7 @@ class Program {
      * @param input Input data.
      * @param output Location to which the output will be written.
      */
-    virtual void singleStep(cv::Mat& input, cv::Mat& output) {};
+    virtual void singleStep(cv::Mat& input, cv::Mat& output, int num_iterations = 10) {};
 
     /**
      * Getters

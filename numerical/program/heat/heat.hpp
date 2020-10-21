@@ -34,7 +34,7 @@ class Heat : public Program {
      * @param input Input data. CV_32FC1
      * @param output Location to which the output will be written.
      */
-    void singleStep(cv::Mat& input, cv::Mat& output);
+    void singleStep(cv::Mat& input, cv::Mat& output, int num_iterations = 10);
 
     int getWidth() { return width; }
     int getHeight() { return height; }

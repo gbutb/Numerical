@@ -48,7 +48,7 @@ Heat::~Heat() {
     clReleaseKernel(_heat_kernel);
 }
 
-void Heat::singleStep(cv::Mat& input, cv::Mat& output) {
+void Heat::singleStep(cv::Mat& input, cv::Mat& output, int num_iterations) {
     int err;
     CV_Assert(input.type() == CV_32FC1);
     CV_Assert(output.type() == CV_32FC1);
