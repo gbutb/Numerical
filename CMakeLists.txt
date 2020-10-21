@@ -51,3 +51,9 @@ target_link_libraries(
     mainWindow
     numerical
     ${OpenCV_LIBS})
+
+add_executable(mainLaplace mainLaplace.cpp)
+target_link_libraries(
+    mainLaplace
+    numerical
+    ${OpenCV_LIBS})

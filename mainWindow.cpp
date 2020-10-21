@@ -11,7 +11,7 @@
 #include "numerical/numerical.hpp"
 #include "window/camera.hpp"
 
-#include <numerical/program/laplace/laplace.hpp>
+#include <numerical/program/wave/wave.hpp>
 
 void printUsage() {
     printf("Usage: mainWindow -w [width] -h [height] -t [time_step] -x [space_step]\n");
@@ -28,14 +28,6 @@ cv::Mat initializeWave(int width, int height) {
             input.at<cv::Vec2f>(height/2 + height/16 + y, width/2 + width/8 + x) = cv::Vec2f(
                 10*cos(3.1415*x*downscale/(2*width))*cos(3.1415*y*downscale/(2*height)),
                 10*cos(3.1415*x*downscale/(2*width))*cos(3.1415*y*downscale/(2*height)));
-    return input;
-}
-
-cv::Mat initialize_boundary_conds(int width, int height) {
-    cv::Mat input = cv::Mat::zeros(height, width, CV_32FC1);
-    for (int x = 0; x < width; ++x) {
-        input.at<float>(0, x) = sin(x / 10.0);
-    }
     return input;
 }
 
@@ -79,8 +71,8 @@ int main(int argn, char** argv) {
     Context context;
     SolverOptions options(width, height, time_step, space_step);
 
-    shared_ptr<Laplace> wave(new Laplace(context, options));
-    window.registerProgram(wave, initialize_boundary_conds);
+    shared_ptr<Wave> wave(new Wave(context, options));
+    window.registerProgram(wave, initializeWave);
 
     while (window) {}
     return EXIT_SUCCESS;
