@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <fstream>
+using std::ofstream;
+
 #include <functional>
 
 #include <numerical/numerical.hpp>
@@ -48,15 +51,20 @@ int main(int argn, char** argv) {
     int num = -1;
     int iterNum = 10000;
 
+    char destination[500] = "\0";
+
     // Parse args
     int opt;
-    while ((opt = getopt(argn, argv, "n:i:")) != -1) {
+    while ((opt = getopt(argn, argv, "n:i:d:")) != -1) {
         switch (opt) {
             case 'n':
                 num = atoi(optarg);
                 break;
             case 'i':
                 iterNum = atoi(optarg);
+                break;
+            case 'd':
+                strcpy(destination, optarg);
                 break;
         }
     }
@@ -82,6 +90,17 @@ int main(int argn, char** argv) {
     laplace.singleStep(map, map, iterNum);
 
     displayMat(map);
+
+    if (strlen(destination) == 0) return EXIT_SUCCESS;
+
+    ofstream file(destination);
+    for (int x = 0; x < width; ++x) {
+        for (int y = 0; y < height; ++y) {
+            file << x*space_step << " " << y*space_step << " " << map.at<float>(y, x) << "\n";
+        }
+        file << "\n";
+    }
+    file.close();
 
     return EXIT_SUCCESS;
 }
