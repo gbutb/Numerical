@@ -2,3 +2,5 @@
 build/*
 garbage/*
 .DS_Store
+*.dat
+
